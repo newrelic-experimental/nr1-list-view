@@ -1,152 +1,93 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import {
-    Radar,
-    RadarChart,
-    PolarGrid,
-    PolarAngleAxis,
-    PolarRadiusAxis,
-} from 'recharts';
-import {Card, CardBody, HeadingText, NrqlQuery, Spinner, AutoSizer} from 'nr1';
+import { AutoSizer, NrqlQuery, Spinner, nerdlet } from 'nr1';
 
-export default class ListViewVisualization extends React.Component {
-    // Custom props you wish to be configurable in the UI must also be defined in
-    // the nr1.json file for the visualization. See docs for more details.
-    static propTypes = {
-        /**
-         * A fill color to override the default fill color. This is an example of
-         * a custom chart configuration.
-         */
-        fill: PropTypes.string,
+import { runQuery, toList } from './data';
+import EmptyState from '../../library/components/EmptyState';
 
-        /**
-         * A stroke color to override the default stroke color. This is an example of
-         * a custom chart configuration.
-         */
-        stroke: PropTypes.string,
-        /**
-         * An array of objects consisting of a nrql `query` and `accountId`.
-         * This should be a standard prop for any NRQL based visualizations.
-         */
-        nrqlQueries: PropTypes.arrayOf(
-            PropTypes.shape({
-                accountId: PropTypes.number,
-                query: PropTypes.string,
-            })
-        ),
-    };
+const ListViewVisualization = ({ accountId, query, templateString, showDebug }) => {
+  if (!accountId || !query) return <EmptyState />;
 
-    /**
-     * Restructure the data for a non-time-series, facet-based NRQL query into a
-     * form accepted by the Recharts library's RadarChart.
-     * (https://recharts.org/api/RadarChart).
-     */
-    transformData = (rawData) => {
-        return rawData.map((entry) => ({
-            name: entry.metadata.name,
-            // Only grabbing the first data value because this is not time-series data.
-            value: entry.data[0].y,
-        }));
-    };
+  const [list, setList] = useState([]);
+  const [queryData, setQueryData] = useState();
+  const [filterText, setFilterText] = useState('');
 
-    /**
-     * Format the given axis tick's numeric value into a string for display.
-     */
-    formatTick = (value) => {
-        return value.toLocaleString();
-    };
+  useEffect(() => loadData(), [accountId, query]);
+  useEffect(() => generateList(), [queryData, templateString]);
 
-    render() {
-        const {nrqlQueries, stroke, fill} = this.props;
-
-        const nrqlQueryPropsAvailable =
-            nrqlQueries &&
-            nrqlQueries[0] &&
-            nrqlQueries[0].accountId &&
-            nrqlQueries[0].query;
-
-        if (!nrqlQueryPropsAvailable) {
-            return <EmptyState />;
-        }
-
-        return (
-            <AutoSizer>
-                {({width, height}) => (
-                    <NrqlQuery
-                        query={nrqlQueries[0].query}
-                        accountId={parseInt(nrqlQueries[0].accountId)}
-                        pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
-                    >
-                        {({data, loading, error}) => {
-                            if (loading) {
-                                return <Spinner />;
-                            }
-
-                            if (error) {
-                                return <ErrorState />;
-                            }
-
-                            const transformedData = this.transformData(data);
-
-                            return (
-                                <RadarChart
-                                    width={width}
-                                    height={height}
-                                    data={transformedData}
-                                >
-                                    <PolarGrid />
-                                    <PolarAngleAxis dataKey="name" />
-                                    <PolarRadiusAxis
-                                        tickFormatter={this.formatTick}
-                                    />
-                                    <Radar
-                                        dataKey="value"
-                                        stroke={stroke || '#51C9B7'}
-                                        fill={fill || '#51C9B7'}
-                                        fillOpacity={0.6}
-                                    />
-                                </RadarChart>
-                            );
-                        }}
-                    </NrqlQuery>
-                )}
-            </AutoSizer>
-        );
+  const generateList = async () => {
+    let list;
+    try {
+      list = toList(queryData || {}, templateString || '');
+    } catch (e) {
+      if (e.message.includes('Templating Error:')) {
+        if (showDebug) {
+          console.group("Template Error");
+          console.error(e.message);
+          console.groupEnd();
+        } else {
+          console.log("Please check the Template String!");
+        } 
+        return;
+      }
     }
-}
+    
+    if (list) setList(list);
+  };
 
-const EmptyState = () => (
-    <Card className="EmptyState">
-        <CardBody className="EmptyState-cardBody">
-            <HeadingText
-                spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-                type={HeadingText.TYPE.HEADING_3}
-            >
-                Please provide at least one NRQL query & account ID pair
-            </HeadingText>
-            <HeadingText
-                spacingType={[HeadingText.SPACING_TYPE.MEDIUM]}
-                type={HeadingText.TYPE.HEADING_4}
-            >
-                An example NRQL query you can try is:
-            </HeadingText>
-            <code>
-                FROM NrUsage SELECT sum(usage) FACET metric SINCE 1 week ago
-            </code>
-        </CardBody>
-    </Card>
-);
+  const loadData = async () => {
+    const queryData= await runQuery(accountId, query, showDebug);
+    setQueryData(queryData);
+  };
 
-const ErrorState = () => (
-    <Card className="ErrorState">
-        <CardBody className="ErrorState-cardBody">
-            <HeadingText
-                className="ErrorState-headingText"
-                spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-                type={HeadingText.TYPE.HEADING_3}
-            >
-                Oops! Something went wrong.
-            </HeadingText>
-        </CardBody>
-    </Card>
-);
+  const filterHandler = evt => setFilterText(evt.target.value);
+
+  if (!accountId || !query) return null;
+
+  let regex;
+  try {
+    if (filterText) regex = new RegExp(filterText, 'i');
+  } catch (e) {
+    if (showDebug) {
+      console.group(`Cannot filter on ${filterText}`);
+      console.error(e.message);
+      console.groupEnd();
+    } else {
+      console.log(`Cannot filter on ${filterText}`);
+    }
+  }
+
+  const filteredList = filterText && regex ? list.filter(item => regex.test(item)) : list;
+
+  return (
+    <AutoSizer>
+      {({width, height}) => (
+        <div className="list-container" style={{width, height}}>
+        <div className="filter">
+          <input
+            type="search"
+            placeholder="filter..."
+            className="u-unstyledInput filter-field"
+            value={filterText}
+            onChange={filterHandler}
+          />
+        </div>
+        <ul className="list-view">
+          {filteredList.map((item, i) => (
+            <li className="list-item" key={i}>{item}</li>
+          ))}
+        </ul>
+      </div>
+      )}
+    </AutoSizer>
+  );
+};
+
+ListViewVisualization.propTypes = {
+  accountId: PropTypes.number,
+  query: PropTypes.string,
+  templateString: PropTypes.string,
+  showDebug: PropTypes.bool,
+};
+
+export default ListViewVisualization;

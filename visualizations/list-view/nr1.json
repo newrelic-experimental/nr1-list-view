@@ -1,39 +1,32 @@
 {
-    "schemaType": "VISUALIZATION",
-    "id": "list-view",
-    "displayName": "ListView",
-    "description": "",
-    "configuration": [
-        {
-            "name": "nrqlQueries",
-            "title": "NRQL Queries",
-            "type": "collection",
-            "items": [
-                {
-                    "name": "accountId",
-                    "title": "Account ID",
-                    "description": "Account ID to be associated with the query",
-                    "type": "account-id"
-                },
-                {
-                    "name": "query",
-                    "title": "Query",
-                    "description": "NRQL query for visualization",
-                    "type": "nrql"
-                }
-            ]
-        },
-        {
-            "name": "fill",
-            "title": "Fill color",
-            "description": "A fill color to override the default fill color",
-            "type": "string"
-        },
-        {
-            "name": "stroke",
-            "title": "Stroke color",
-            "description": "A stroke color to override the default stroke color",
-            "type": "string"
-        }
-    ]
+  "schemaType": "VISUALIZATION",
+  "id": "list-view",
+  "displayName": "List View",
+  "description": "",
+  "configuration": [
+    {
+      "name": "accountId",
+      "title": "Account ID",
+      "description": "Account ID to be associated with the query",
+      "type": "account-id"
+    },
+    {
+      "name": "query",
+      "title": "Query",
+      "description": "NRQL query for visualization",
+      "type": "nrql"
+    },
+    {
+      "name": "templateString",
+      "title": "Template String",
+      "description": "Template to display  item \n(use {{COLUMN_NAME}} to use values returned from the query)",
+      "type": "string"
+    },
+    {
+      "name": "showDebug",
+      "title": "Show Debug",
+      "description": "When checked, logs output to console",
+      "type": "boolean"
+    }
+  ]
 }
