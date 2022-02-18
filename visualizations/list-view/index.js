@@ -38,6 +38,7 @@ const ListViewVisualization = ({ accountId, query, templateString, showDebug }) 
   const loadData = async () => {
     const queryData= await runQuery(accountId, query, showDebug);
     setQueryData(queryData);
+    setList([]);
   };
 
   const filterHandler = evt => setFilterText(evt.target.value);
