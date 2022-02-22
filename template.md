@@ -47,10 +47,10 @@ Use the following format to specify additional formatting rules.
 | Example | Output | Description |
 | --- | --- | --- |
 | {{ # val }} | 1.234 | Default formatting  |
-| {{ # val | 3 }} | 095 | Specifies the minimum digits the integer should have. This can be from 1 to 21.  |
-| {{ # val | .2 }} | 1.20 | Specifies the minimum digits the fraction should have. This can be from 0 to 20.  |
-| {{ # val | .0,5 }} | 2.12345 | Specifies the maximum digits the fraction should have. This can be from 0 to 20.  |
-| {{ # val | + }} | +0.06 | Always displays the sign ( + or - )  |
+| {{ # val &#124 3 }} | 095 | Specifies the minimum digits the integer should have. This can be from 1 to 21.  |
+| {{ # val &#124 .2 }} | 1.20 | Specifies the minimum digits the fraction should have. This can be from 0 to 20.  |
+| {{ # val &#124 .0,5 }} | 2.12345 | Specifies the maximum digits the fraction should have. This can be from 0 to 20.  |
+| {{ # val &#124 + }} | +0.06 | Always displays the sign ( + or - )  |
 
 ### Dates
 
