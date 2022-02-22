@@ -11,8 +11,29 @@ const D = (datetime, format) => {
   const s = dt.getSeconds();
   const ms = dt.getMilliseconds();
 
-  const weekdays = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const weekdays = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   const formatter = {
     yy: String(y).slice(-2),
     yyyy: String(y),
@@ -34,8 +55,11 @@ const D = (datetime, format) => {
     mm: ('0' + m).slice(-2),
     s: String(s),
     ss: ('0' + s).slice(-2),
-    sss: ('00' + ms).slice(-3)
-  }
+    sss: ('00' + ms).slice(-3),
+  };
 
-  return format.replace(/\[([^\]]+)]|y{2,4}|M{1,4}|d{1,4}|H{1,2}|h{1,2}|t{1,2}|m{1,2}|s{1,3}/g, (match, p1) => p1 || formatter[match]);
-}
+  return format.replace(
+    /\[([^\]]+)]|y{2,4}|M{1,4}|d{1,4}|H{1,2}|h{1,2}|t{1,2}|m{1,2}|s{1,3}/g,
+    (match, p1) => p1 || formatter[match]
+  );
+};

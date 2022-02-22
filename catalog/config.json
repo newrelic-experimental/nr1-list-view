@@ -1,0 +1,17 @@
+{
+    "tagline": "List View",
+    "repository": "https://github.com/newrelic/nr1-list-view.git",
+    "details": "[]",
+    "support": {
+      "issues": {
+        "url": "https://github.com/newrelic/nr1-list-view/issues"
+      },
+      "email": {
+        "address": "opensource+nr1-list-view@newrelic.com"
+      },
+      "community": {
+        "url": "https://discuss.newrelic.com/c/build-on-new-relic/nerdpacks"
+      }
+    },
+    "whatsNew": "Initial release"
+  }

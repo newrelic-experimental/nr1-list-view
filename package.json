@@ -4,10 +4,12 @@
     "version": "0.1.0",
     "scripts": {
         "start": "nr1 nerdpack:serve",
-        "test": "exit 0"
+        "test": "exit 0",
+        "eslint-check": "eslint visualizations/",
+        "eslint-fix": "eslint visualizations/ --fix"
     },
-    "nr1": {
-        "uuid": "8db3465b-1fc0-4e91-864e-62fe4f7053c2"
+    "bugs": {
+        "email": "opensource+nr1-list-view@newrelic.com"
     },
     "dependencies": {
         "prop-types": "^15.6.2",
@@ -18,5 +20,12 @@
         "last 2 versions",
         "not ie < 11",
         "not dead"
-    ]
+    ],
+    "devDependencies": {
+        "@newrelic/eslint-plugin-newrelic": "^0.3.1",
+        "@semantic-release/changelog": "^6.0.1",
+        "@semantic-release/git": "^10.0.1",
+        "eslint": "^6.8.0",
+        "prettier": "^2.5.1"
+    }
 }
