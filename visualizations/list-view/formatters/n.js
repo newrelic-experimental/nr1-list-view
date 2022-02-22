@@ -1,12 +1,13 @@
+// eslint-disable-next-line no-unused-vars
 const N = (num, opts) => {
   if (!num && num !== 0) return '';
   if (!opts) return new Intl.NumberFormat('default').format(num);
   const parts = opts.split(';').map((o) => o.trim());
   const locale = parts.length > 1 ? parts[1] : 'default';
   const [intOpts, fracOpts] = parts[0].split('.');
-  let options = {};
+  const options = {};
   if (intOpts) {
-    const [_m, sign, mi] = intOpts.match(/[ ]*(\+?)[ ]*(\d*)/);
+    const [_m, sign, mi] = intOpts.match(/[ ]*(\+?)[ ]*(\d*)/); // eslint-disable-line no-unused-vars
     if (sign) options.signDisplay = 'always';
     const minInt = Number(mi);
     if (Number.isInteger(minInt) && minInt > 0 && minInt < 22)

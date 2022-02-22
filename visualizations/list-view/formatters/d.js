@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const D = (datetime, format) => {
   const dt = new Date(datetime);
   if (!format) return dt.toString();
@@ -34,6 +35,7 @@ const D = (datetime, format) => {
     'November',
     'December',
   ];
+  /* eslint-disable prefer-template */
   const formatter = {
     yy: String(y).slice(-2),
     yyyy: String(y),
@@ -57,6 +59,7 @@ const D = (datetime, format) => {
     ss: ('0' + s).slice(-2),
     sss: ('00' + ms).slice(-3),
   };
+  /* eslint-enable prefer-template */
 
   return format.replace(
     /\[([^\]]+)]|y{2,4}|M{1,4}|d{1,4}|H{1,2}|h{1,2}|t{1,2}|m{1,2}|s{1,3}/g,
