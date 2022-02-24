@@ -38,6 +38,7 @@ const D = (datetime, format) => {
   /* eslint-disable prefer-template */
   const formatter = {
     yy: String(y).slice(-2),
+    yyy: String(y).slice(-2) + 'y',
     yyyy: String(y),
     M: String(mo + 1),
     MM: ('0' + (mo + 1)).slice(-2),
