@@ -2,7 +2,7 @@
 const N = (num, opts) => {
   if (!num && num !== 0) return '';
   if (!opts) return new Intl.NumberFormat('default').format(num);
-  const parts = opts.split(';').map((o) => o.trim());
+  const parts = opts.split('>').map((o) => o.trim());
   const locale = parts.length > 1 ? parts[1] : 'default';
   const [intOpts, fracOpts] = parts[0].split('.');
   const options = {};
